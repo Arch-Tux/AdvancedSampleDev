@@ -1,4 +1,4 @@
-﻿namespace AdvandecSampleDev.domain;
+﻿namespace AdvancedSampleDev.domain;
 
 public class Class1
 {
