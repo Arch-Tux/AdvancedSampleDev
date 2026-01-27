@@ -1,5 +1,7 @@
 namespace AdvancedSampleDev.domain.Entities;
 
+using Exceptions;
+
 public class Product
 {
   public Guid Id { get; private  set; } // Identité
