@@ -203,6 +203,86 @@ Hérite de `IRepository<Supplier>` sans méthodes spécifiques pour le moment.
 
 ## 3.5 Diagramme de classes (Domain)
 
+### Diagramme Mermaid
+
+```mermaid
+classDiagram
+    class Product {
+        +Guid Id
+        +Price Price
+        -bool IsActive
+        +ICollection~Supplier~ Suppliers
+        +Product(Price price)
+        +ChangePrice(Price newPrice)
+    }
+    
+    class Price {
+        -decimal AmountHt
+        -Tva Tva
+        +decimal AmountTtc
+        +Price(decimal amountHt, Tva tva)
+        +Equals(object obj) bool
+        +GetHashCode() int
+        +ToString() string
+    }
+    
+    class Tva {
+        +decimal Rate
+        -Tva(decimal rate)
+        +Tva Reduced$
+        +Tva Intermediate$
+        +Tva Standard$
+        +CalculateTtcFromHt(decimal ht) decimal
+        +CalculateHtFromTtc(decimal ttc) decimal
+    }
+    
+    class Supplier {
+        +Guid Id
+        +string Name
+        +Supplier(string name)
+    }
+    
+    class DomainException {
+        +string Message
+        +DomainException(string message)
+    }
+    
+    class IRepository~T~ {
+        <<interface>>
+        +GetByIdAsync(Guid id) Task~T~
+        +GetAllAsync() Task~IEnumerable~T~~
+        +AddAsync(T entity) Task
+        +UpdateAsync(T entity) Task
+        +DeleteAsync(Guid id) Task
+        +ExistsAsync(Guid id) Task~bool~
+    }
+    
+    class IProductRepository {
+        <<interface>>
+        +GetBySupplierIdAsync(Guid supplierId) Task~IEnumerable~Product~~
+    }
+    
+    class ISupplierRepository {
+        <<interface>>
+    }
+    
+    Product "1" --> "1" Price : contient
+    Price "1" --> "1" Tva : utilise
+    Product "1" --> "*" Supplier : associé à
+    
+    Product ..> DomainException : peut lancer
+    Price ..> DomainException : peut lancer
+    Supplier ..> DomainException : peut lancer
+    
+    IProductRepository --|> IRepository~T~ : hérite
+    ISupplierRepository --|> IRepository~T~ : hérite
+    
+    IProductRepository ..> Product : gère
+    ISupplierRepository ..> Supplier : gère
+```
+
+### Diagramme ASCII (version texte)
+
 ```
 ┌─────────────────┐
 │    Product      │

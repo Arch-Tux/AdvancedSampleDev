@@ -74,7 +74,7 @@ Exception personnalisée pour les violations de règles métier :
 
 **Principe** : Fail-fast - les erreurs sont détectées au plus tôt (constructeurs, méthodes métier)
 
-### Exemple de gestion d'erreur
+### Exemple de code
 ```csharp
 // Dans le constructeur de Price
 public Price(decimal amountHt, Tva tva)
@@ -85,6 +85,75 @@ public Price(decimal amountHt, Tva tva)
     
     Tva = tva ?? throw new DomainException("La TVA ne peut pas être null.");
 }
+```
+
+### Diagramme de séquence - Gestion d'erreur
+
+```mermaid
+sequenceDiagram
+    participant Client as Client HTTP
+    participant Controller as ProductController
+    participant Service as ProductService
+    participant Price as Price (Domain)
+
+    Client->>Controller: POST /api/products
+    activate Controller
+    
+    Controller->>Service: CreateProductAsync(dto)
+    activate Service
+    
+    Note over Service: dto.amountHt = -100 (invalide!)
+    
+    Service->>Price: new Price(-100, tva)
+    activate Price
+    
+    Price->>Price: Validate amountHt > 0
+    Note over Price: ❌ Validation échoue
+    
+    Price-->>Service: throw DomainException("Le prix HT doit être supérieur à zéro.")
+    deactivate Price
+    
+    Service-->>Controller: throw DomainException
+    deactivate Service
+    
+    Controller->>Controller: Catch DomainException
+    Controller-->>Client: 400 Bad Request<br/>{ "error": "Le prix HT doit être supérieur à zéro." }
+    deactivate Controller
+```
+
+### Flux d'erreur pour produit inactif
+
+```mermaid
+sequenceDiagram
+    participant Client as Client HTTP
+    participant Controller as ProductController
+    participant Service as ProductService
+    participant Product as Product (Domain)
+
+    Client->>Controller: PUT /api/products/{id}/price
+    activate Controller
+    
+    Controller->>Service: ChangePriceAsync(id, dto)
+    activate Service
+    
+    Service->>Service: product = GetById(id)
+    Note over Service: product.IsActive = false
+    
+    Service->>Product: ChangePrice(newPrice)
+    activate Product
+    
+    Product->>Product: Validate IsActive
+    Note over Product: ❌ Produit inactif
+    
+    Product-->>Service: throw DomainException("Produit inactif")
+    deactivate Product
+    
+    Service-->>Controller: throw DomainException
+    deactivate Service
+    
+    Controller->>Controller: Catch DomainException
+    Controller-->>Client: 400 Bad Request<br/>{ "error": "Produit inactif" }
+    deactivate Controller
 ```
 
 ---
