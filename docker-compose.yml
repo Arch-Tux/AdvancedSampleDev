@@ -1,9 +1,8 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:16-alpine
+  database:
+    image: postgres:17.4-alpine3.21
     container_name: advancedsampledev-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -19,6 +18,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  adminer2:
+    container_name: advancedsampledev-adminer
+    image: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DESIGN: "pepa-linha"
+    ports:
+      - 8080:8080
+    networks:
+      - advancedsampledev-network
+    depends_on:
+      database:
+        condition: service_healthy
 
 volumes:
   postgres_data:
