@@ -12,3 +12,7 @@ riderModule.iml
 
 # macOS
 .DS_Store
+
+# Environment variables
+.env
+
