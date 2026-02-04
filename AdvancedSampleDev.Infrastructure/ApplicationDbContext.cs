@@ -17,6 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<ProductEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(300).IsRequired();
             entity.Property(e => e.PriceHt).HasColumnType("decimal(18,2)").IsRequired();
             entity.Property(e => e.TvaRate).HasColumnType("decimal(5,4)").IsRequired();
             entity.Property(e => e.IsActive).IsRequired();
