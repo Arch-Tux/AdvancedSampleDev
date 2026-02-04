@@ -16,6 +16,8 @@ riderModule.iml
 # Environment variables
 .env
 
-# Configuration files with sensitive data (production only)
+# Configuration files - utiliser uniquement .env
+appsettings.Development.json
 appsettings.Production.json
 appsettings.Staging.json
+appsettings.*.json

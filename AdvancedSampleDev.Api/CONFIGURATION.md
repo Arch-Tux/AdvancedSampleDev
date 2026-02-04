@@ -3,35 +3,54 @@
 ## Fichiers de configuration
 
 ### `appsettings.json`
-Fichier de configuration de base avec des placeholders. **Commité dans Git**.
-Ne contient pas de credentials réels.
+Fichier de configuration de base **sans credentials**. Commité dans Git.
+Contient uniquement les paramètres de logging et autres configurations génériques.
 
-### `appsettings.Development.json`
-Fichier de configuration pour l'environnement de développement local. **Commité dans Git**.
-Contient les credentials de la base de données Docker locale (non sensibles).
-
-### `appsettings.Production.json`
-Fichier de configuration pour l'environnement de production. **Non commité dans Git** (dans .gitignore).
-Doit contenir les vrais credentials de production.
+### `.env`
+**Fichier de configuration principal pour les credentials**. **Non commité dans Git** (dans .gitignore).
+Ce fichier contient toutes les variables d'environnement sensibles.
 
 ## Configuration de la base de données
 
-### Développement local
-Les credentials de développement sont dans `appsettings.Development.json` et correspondent au `docker-compose.yml` :
-- **Host**: localhost
-- **Port**: 5432
-- **Database**: advancedsampledev_db
-- **Username**: advancedsampledev
-- **Password**: DevPassword123!
+### Variables d'environnement requises
 
-### Production
-Créez un fichier `appsettings.Production.json` avec vos credentials de production :
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=YOUR_HOST;Port=5432;Database=YOUR_DATABASE;Username=YOUR_USER;Password=YOUR_PASSWORD"
-  }
-}
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+
+```env
+POSTGRES_HOST=localhost
+POSTGRES_USER=votre_utilisateur
+POSTGRES_PASSWORD=votre_mot_de_passe
+POSTGRES_DB=votre_base_de_donnees
+POSTGRES_PORT=5432
 ```
 
-Ce fichier sera automatiquement ignoré par Git.
+### Développement local (Docker)
+
+Pour le développement avec Docker (voir `docker-compose.yml`), utilisez :
+
+```env
+POSTGRES_HOST=localhost
+POSTGRES_USER=advancedsampledev
+POSTGRES_PASSWORD=DevPassword123!
+POSTGRES_DB=advancedsampledev_db
+POSTGRES_PORT=5432
+```
+
+### Production
+
+Pour la production, modifiez simplement les valeurs dans votre fichier `.env` :
+
+```env
+POSTGRES_HOST=votre_serveur_prod
+POSTGRES_USER=votre_user_prod
+POSTGRES_PASSWORD=votre_password_prod
+POSTGRES_DB=votre_db_prod
+POSTGRES_PORT=5432
+```
+
+## Sécurité
+
+⚠️ **IMPORTANT** :
+- Le fichier `.env` est automatiquement ignoré par Git
+- Ne committez **JAMAIS** de credentials en dur dans le code
+- Utilisez uniquement le fichier `.env` pour les configurations sensibles
