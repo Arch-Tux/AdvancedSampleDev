@@ -44,9 +44,10 @@ POSTGRES_PORT=5432
 
 ## Gestion de la base de données
 
-### CLI dédié pour le seed et les migrations
+### CLI dédié pour la gestion de la base (création/suppression/seed)
 
 Un projet CLI dédié (`AdvancedSampleDev.Cli`) permet de gérer la base de données **indépendamment du lancement de l'application**.
+Ce CLI n'exécute pas les migrations EF Core : il utilise uniquement `EnsureCreated` / `EnsureDeleted` ainsi que des scripts de seed.
 
 **⚠️ Important** : Le seed ne s'exécute **plus automatiquement** au démarrage de l'application. Cela permet d'éviter :
 - La création/altération non désirée de la base en production
