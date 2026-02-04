@@ -108,8 +108,6 @@ Le conteneur utilise un réseau bridge personnalisé `advancedsampledev-network`
 
 ## Production
 
-⚠️ **Important** : Ne jamais utiliser ce mot de passe en production !
-
 Pour la production :
 1. Utiliser des secrets (Docker Secrets, Kubernetes Secrets, Azure Key Vault, etc.)
 2. Utiliser des mots de passe forts et aléatoires

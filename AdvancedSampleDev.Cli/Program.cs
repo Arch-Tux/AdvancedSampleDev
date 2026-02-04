@@ -1,7 +1,7 @@
-﻿﻿using AdvancedSampleDev.Infrastructure;
+﻿﻿﻿using AdvancedSampleDev.Infrastructure;
+using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Infrastructure.Seed;
 using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,18 +18,8 @@ else
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// Construction de la connection string à partir des variables d'environnement
-var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
-var port = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
-var database = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? throw new InvalidOperationException("POSTGRES_DB non défini");
-var username = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? throw new InvalidOperationException("POSTGRES_USER non défini");
-var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? throw new InvalidOperationException("POSTGRES_PASSWORD non défini");
-
-var connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
-
-// Configuration de la base de données
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+// Configuration de la base de données via l'extension centralisée
+builder.Services.AddPostgreSqlDbContext();
 
 var app = builder.Build();
 
