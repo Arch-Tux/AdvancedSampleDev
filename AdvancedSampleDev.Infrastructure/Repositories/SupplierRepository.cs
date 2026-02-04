@@ -61,6 +61,6 @@ public class SupplierRepository(ApplicationDbContext context) : ISupplierReposit
     // Mapping Entity -> Domain
     private static Supplier MapToDomain(SupplierEntity entity)
     {
-        return new Supplier(entity.Name);
+        return Supplier.Reconstitute(entity.Id, entity.Name);
     }
 }
