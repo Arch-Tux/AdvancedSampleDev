@@ -30,7 +30,11 @@ public class Product
   private Product(Guid id, string name, Price price, bool isActive)
   {
     Id = id;
-    Name = name ?? throw new DomainException("Le nom du produit ne peut pas être null.");
+    if (string.IsNullOrWhiteSpace(name))
+    {
+      throw new DomainException("Le nom du produit ne peut pas être vide.");
+    }
+    Name = name;
     Price = price ?? throw new DomainException("Le prix ne peut pas être null.");
     IsActive = isActive;
   }
