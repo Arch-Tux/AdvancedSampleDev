@@ -1,14 +1,11 @@
 using AdvancedSampleDev.Infrastructure;
-using AdvancedSampleDev.Infrastructure.Seed;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 
-// Charger les variables d'environnement depuis le fichier .env
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
 // Construction de la connection string à partir des variables d'environnement
@@ -29,26 +26,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Seed de la base de données au démarrage
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        
-        // Créer la base de données si elle n'existe pas et appliquer les migrations
-        await context.Database.EnsureCreatedAsync();
-        
-        // Seeder les données
-        await DatabaseSeeder.SeedAsync(context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Une erreur s'est produite lors du seed de la base de données.");
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

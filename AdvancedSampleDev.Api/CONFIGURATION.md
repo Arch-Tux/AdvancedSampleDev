@@ -48,6 +48,34 @@ POSTGRES_DB=votre_db_prod
 POSTGRES_PORT=5432
 ```
 
+## Gestion de la base de données
+
+### CLI dédié pour le seed et les migrations
+
+Un projet CLI dédié (`AdvancedSampleDev.Cli`) permet de gérer la base de données **indépendamment du lancement de l'application**.
+
+**⚠️ Important** : Le seed ne s'exécute **plus automatiquement** au démarrage de l'application. Cela permet d'éviter :
+- La création/altération non désirée de la base en production
+- L'ajout de temps au cold start de l'application
+
+### Commandes disponibles
+
+```bash
+# Seeder la base de données avec des données de test
+dotnet run --project AdvancedSampleDev.Cli seed
+
+# Créer la base de données
+dotnet run --project AdvancedSampleDev.Cli db-create
+
+# Réinitialiser complètement (drop + create + seed)
+dotnet run --project AdvancedSampleDev.Cli db-reset
+
+# Supprimer la base de données
+dotnet run --project AdvancedSampleDev.Cli db-drop
+```
+
+Voir `AdvancedSampleDev.Cli/README.md` pour plus de détails.
+
 ## Sécurité
 
 ⚠️ **IMPORTANT** :
