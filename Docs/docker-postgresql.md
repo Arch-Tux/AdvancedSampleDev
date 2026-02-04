@@ -14,7 +14,7 @@ docker-compose ps
 
 ### 3. Voir les logs
 ```bash
-docker-compose logs -f postgres
+docker-compose logs -f database
 ```
 
 ### 4. Arrêter PostgreSQL
