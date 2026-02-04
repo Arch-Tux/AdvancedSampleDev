@@ -85,9 +85,19 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
     {
         var tva = GetTvaFromRate(entity.TvaRate);
         var price = new Price(entity.PriceHt, tva);
-        var product = Product.Reconstitute(entity.Id, entity.Name, price, entity.IsActive);
         
-        // TODO: Gérer l'association des suppliers via un service dans Application
+        // Mapper les suppliers associés
+        var suppliers = entity.ProductSuppliers?
+            .Where(ps => ps.Supplier != null)
+            .Select(ps => Supplier.Reconstitute(ps.Supplier!.Id, ps.Supplier!.Name))
+            .ToList();
+        
+        var product = Product.Reconstitute(
+            entity.Id, 
+            entity.Name, 
+            price, 
+            entity.IsActive, 
+            suppliers);
         
         return product;
     }

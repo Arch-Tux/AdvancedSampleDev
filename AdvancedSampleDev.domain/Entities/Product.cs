@@ -22,18 +22,19 @@ public class Product
   }
 
   // Constructeur privé pour reconstituer depuis la persistance (utilisé par Infrastructure)
-  private Product(Guid id, string name, Price price, bool isActive)
+  private Product(Guid id, string name, Price price, bool isActive, ICollection<Supplier>? suppliers = null)
   {
     Id = id;
     Name = ValidateName(name);
     Price = ValidatePrice(price);
     IsActive = isActive;
+    Suppliers = suppliers ?? new List<Supplier>();
   }
 
   // Factory method pour Infrastructure - reconstitution depuis la base de données
-  public static Product Reconstitute(Guid id, string name, Price price, bool isActive)
+  public static Product Reconstitute(Guid id, string name, Price price, bool isActive, ICollection<Supplier>? suppliers = null)
   {
-    return new Product(id, name, price, isActive);
+    return new Product(id, name, price, isActive, suppliers);
   }
 
   // Méthode publique pour accès
