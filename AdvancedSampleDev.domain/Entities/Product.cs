@@ -15,14 +15,9 @@ public class Product
   // Constructeur public pour créer un nouveau produit
   public Product(string name, Price price)
   {
-    if (string.IsNullOrWhiteSpace(name))
-    {
-      throw new DomainException("Le nom du produit ne peut pas être vide.");
-    }
-    
     Id = Guid.NewGuid();
-    Name = name;
-    Price = price ?? throw new DomainException("Le prix ne peut pas être null.");
+    Name = ValidateName(name);
+    Price = ValidatePrice(price);
     IsActive = true;
   }
 
@@ -30,12 +25,8 @@ public class Product
   private Product(Guid id, string name, Price price, bool isActive)
   {
     Id = id;
-    if (string.IsNullOrWhiteSpace(name))
-    {
-      throw new DomainException("Le nom du produit ne peut pas être vide.");
-    }
-    Name = name;
-    Price = price ?? throw new DomainException("Le prix ne peut pas être null.");
+    Name = ValidateName(name);
+    Price = ValidatePrice(price);
     IsActive = isActive;
   }
 
@@ -60,12 +51,7 @@ public class Product
 
   public void ChangeName(string newName)
   {
-    if (string.IsNullOrWhiteSpace(newName))
-    {
-      throw new DomainException("Le nom du produit ne peut pas être vide.");
-    }
-    
-    Name = newName;
+    Name = ValidateName(newName);
   }
 
   public void ChangePrice(Price newPrice)
@@ -75,6 +61,22 @@ public class Product
       throw new DomainException("Produit inactif");
     }
     
-    Price = newPrice ?? throw new DomainException("Le prix ne peut pas être null.");
+    Price = ValidatePrice(newPrice);
+  }
+
+  // Validations centralisées
+  private static string ValidateName(string name)
+  {
+    if (string.IsNullOrWhiteSpace(name))
+    {
+      throw new DomainException("Le nom du produit ne peut pas être vide.");
+    }
+    return name;
+  }
+
+  private static Price ValidatePrice(Price price)
+  {
+    return price ?? throw new DomainException("Le prix ne peut pas être null.");
   }
 }
+
