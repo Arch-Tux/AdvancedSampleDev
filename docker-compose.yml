@@ -1,0 +1,42 @@
+services:
+  database:
+    image: postgres:17.4-alpine3.21
+    container_name: advancedsampledev-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - advancedsampledev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    container_name: advancedsampledev-adminer
+    image: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DESIGN: "pepa-linha"
+    ports:
+      - 8080:8080
+    networks:
+      - advancedsampledev-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  advancedsampledev-network:
+    driver: bridge

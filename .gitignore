@@ -12,3 +12,12 @@ riderModule.iml
 
 # macOS
 .DS_Store
+
+# Environment variables
+.env
+
+# Configuration files - utiliser uniquement .env
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.*.json
