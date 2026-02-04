@@ -26,15 +26,9 @@ POSTGRES_PORT=5432
 
 ### Développement local (Docker)
 
-Pour le développement avec Docker (voir `docker-compose.yml`), utilisez :
+Pour le développement avec Docker, les valeurs sont définies dans `docker-compose.yml` et doivent être reportées dans votre fichier `.env` local.
 
-```env
-POSTGRES_HOST=localhost
-POSTGRES_USER=advancedsampledev
-POSTGRES_PASSWORD=DevPassword123!
-POSTGRES_DB=advancedsampledev_db
-POSTGRES_PORT=5432
-```
+Consultez le fichier `docker-compose.yml` pour voir les variables d'environnement requises.
 
 ### Production
 

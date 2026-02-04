@@ -16,11 +16,15 @@ Créez un fichier `.env` à la racine avec :
 
 ```env
 POSTGRES_HOST=localhost
-POSTGRES_USER=advancedsampledev
-POSTGRES_PASSWORD=DevPassword123!
-POSTGRES_DB=advancedsampledev_db
+POSTGRES_USER=your_username
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_database
 POSTGRES_PORT=5432
 ```
+
+⚠️ **Pour le développement local avec Docker**, utilisez les valeurs définies dans `docker-compose.yml`.
+
+Pour voir un exemple de configuration, consultez le fichier `docker-compose.yml`.
 
 ### 3. Démarrer la base de données
 

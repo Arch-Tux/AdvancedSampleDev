@@ -30,36 +30,53 @@ docker-compose down -v
 ## Configuration
 
 ### Variables d'environnement
-- **POSTGRES_USER** : `advancedsampledev`
-- **POSTGRES_PASSWORD** : `DevPassword123!`
-- **POSTGRES_DB** : `advancedsampledev_db`
-- **Port** : `5432`
+
+Les credentials sont définis dans le fichier `.env` à la racine du projet (non commité dans Git).
+
+Variables requises :
+- **POSTGRES_HOST** - Hôte de la base de données (ex: localhost)
+- **POSTGRES_USER** - Nom d'utilisateur PostgreSQL
+- **POSTGRES_PASSWORD** - Mot de passe PostgreSQL
+- **POSTGRES_DB** - Nom de la base de données
+- **POSTGRES_PORT** - Port PostgreSQL (par défaut 5432)
+
+Voir le fichier `.env` ou `docker-compose.yml` pour les valeurs actuelles.
 
 ### Connection String
+
+La connection string est construite dynamiquement à partir des variables d'environnement du fichier `.env`.
+
+Format :
 ```
-Host=localhost;Port=5432;Database=advancedsampledev_db;Username=advancedsampledev;Password=DevPassword123!
+Host={POSTGRES_HOST};Port={POSTGRES_PORT};Database={POSTGRES_DB};Username={POSTGRES_USER};Password={POSTGRES_PASSWORD}
 ```
+
+⚠️ **Ne jamais committer de credentials en dur dans le code ou la documentation !**
 
 ## Commandes utiles
 
 ### Se connecter à PostgreSQL en ligne de commande
 ```bash
-docker exec -it advancedsampledev-postgres psql -U advancedsampledev -d advancedsampledev_db
+# Charger les variables d'environnement depuis .env
+source .env
+
+# Se connecter
+docker exec -it advancedsampledev-postgres psql -U $POSTGRES_USER -d $POSTGRES_DB
 ```
 
 ### Exécuter une commande SQL
 ```bash
-docker exec -it advancedsampledev-postgres psql -U advancedsampledev -d advancedsampledev_db -c "SELECT version();"
+docker exec -it advancedsampledev-postgres psql -U $POSTGRES_USER -d $POSTGRES_DB -c "SELECT version();"
 ```
 
 ### Backup de la base de données
 ```bash
-docker exec -t advancedsampledev-postgres pg_dump -U advancedsampledev advancedsampledev_db > backup.sql
+docker exec -t advancedsampledev-postgres pg_dump -U $POSTGRES_USER $POSTGRES_DB > backup.sql
 ```
 
 ### Restaurer un backup
 ```bash
-docker exec -i advancedsampledev-postgres psql -U advancedsampledev advancedsampledev_db < backup.sql
+docker exec -i advancedsampledev-postgres psql -U $POSTGRES_USER $POSTGRES_DB < backup.sql
 ```
 
 ## Healthcheck
