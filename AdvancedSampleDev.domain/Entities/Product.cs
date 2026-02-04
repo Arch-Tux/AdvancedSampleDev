@@ -18,6 +18,9 @@ public class Product
     IsActive = true;
   }
 
+  // Méthode publique pour accès (nécessaire pour la persistence)
+  public bool GetIsActive() => IsActive;
+
   public void ChangePrice(Price newPrice)
   {
     if (!IsActive)

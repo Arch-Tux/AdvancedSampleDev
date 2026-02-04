@@ -17,6 +17,11 @@ public class Price
     
     Tva = tva ?? throw new DomainException("La TVA ne peut pas être null.");
   }
+
+  // Méthodes publiques pour accès (nécessaires pour la persistence)
+  public decimal GetAmountHt() => AmountHt;
+  public decimal GetAmountTtc() => AmountTtc;
+  public decimal GetTvaRate() => Tva.Rate;
   
   // Equality pour Value Object
   public override bool Equals(object? obj)
