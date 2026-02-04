@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 5
 
-  adminer2:
+  adminer:
     container_name: advancedsampledev-adminer
     image: adminer
     restart: unless-stopped
