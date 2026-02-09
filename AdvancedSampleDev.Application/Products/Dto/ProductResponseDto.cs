@@ -1,4 +1,4 @@
-namespace AdvancedSampleDev.Api.Features.Product.Dto;
+namespace AdvancedSampleDev.Application.Products.Dto;
 
 /// <summary>
 /// DTO pour la réponse contenant les informations d'un produit
@@ -6,7 +6,7 @@ namespace AdvancedSampleDev.Api.Features.Product.Dto;
 public class ProductResponseDto
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
     public decimal PriceHt { get; set; }
     public decimal PriceTtc { get; set; }
     public decimal TvaRate { get; set; }

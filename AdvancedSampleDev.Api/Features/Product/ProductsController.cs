@@ -1,6 +1,6 @@
-using AdvancedSampleDev.Api.Features.Product.Dto;
-using AdvancedSampleDev.Api.Features.Product.Mappings;
-using AdvancedSampleDev.Application.Services;
+using AdvancedSampleDev.Application.Products;
+using AdvancedSampleDev.Application.Products.Dto;
+using AdvancedSampleDev.Application.Products.Mappings;
 using AdvancedSampleDev.domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 

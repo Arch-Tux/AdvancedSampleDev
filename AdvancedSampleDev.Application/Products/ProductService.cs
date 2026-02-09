@@ -1,7 +1,7 @@
 using AdvancedSampleDev.domain.Entities;
 using AdvancedSampleDev.domain.Interfaces.Product;
 
-namespace AdvancedSampleDev.Application.Services;
+namespace AdvancedSampleDev.Application.Products;
 
 public class ProductService
 {

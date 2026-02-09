@@ -1,5 +1,5 @@
 using AdvancedSampleDev.Infrastructure.Extensions;
-using AdvancedSampleDev.Application.Services;
+using AdvancedSampleDev.Application.Products;
 using AdvancedSampleDev.domain.Interfaces.Product;
 using AdvancedSampleDev.domain.Interfaces.Supplier;
 using AdvancedSampleDev.Infrastructure.Repositories;

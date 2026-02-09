@@ -1,7 +1,7 @@
-using AdvancedSampleDev.Api.Features.Product.Dto;
+using AdvancedSampleDev.Application.Products.Dto;
 using AdvancedSampleDev.domain.Entities;
 
-namespace AdvancedSampleDev.Api.Features.Product.Mappings;
+namespace AdvancedSampleDev.Application.Products.Mappings;
 
 /// <summary>
 /// Extensions de mapping entre les entités du domaine et les DTOs
