@@ -13,6 +13,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AdvancedSampleDev.Infrastructure\AdvancedSampleDev.Infrastructure.csproj" />
+      <ProjectReference Include="..\AdvancedSampleDev.Application\AdvancedSampleDev.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Supplier\Dto\" />
     </ItemGroup>
 
 </Project>
