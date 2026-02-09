@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Supplier\Dto\" />
+      <Folder Include="Features\Supplier\" />
     </ItemGroup>
 
 </Project>
