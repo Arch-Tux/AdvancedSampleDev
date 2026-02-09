@@ -30,16 +30,16 @@ public static class ProductMappingExtensions
     }
 
     /// <summary>
-    /// Convertit un TvaType (string) en instance Tva du domaine
+    /// Convertit un TvaType (string) en enum TvaType du domaine
     /// </summary>
-    public static Tva ToTva(this string tvaType)
+    public static TvaType ToTvaType(this string tvaTypeString)
     {
-        return tvaType switch
+        return tvaTypeString switch
         {
-            "Reduced" => Tva.Reduced,
-            "Intermediate" => Tva.Intermediate,
-            "Standard" => Tva.Standard,
-            _ => Tva.Standard // Par défaut
+            "Reduced" => TvaType.Reduced,
+            "Intermediate" => TvaType.Intermediate,
+            "Standard" => TvaType.Standard,
+            _ => TvaType.Standard // Par défaut
         };
     }
 }

@@ -7,10 +7,10 @@ public class ProductResponseDto
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
-    public decimal PriceHt { get; set; }
-    public decimal PriceTtc { get; set; }
+    public required decimal PriceHt { get; set; }
+    public required decimal PriceTtc { get; set; }
     public decimal TvaRate { get; set; }
-    public bool IsActive { get; set; }
+    public required bool IsActive { get; set; }
     public List<SupplierDto> Suppliers { get; set; } = new();
 }
 

@@ -67,8 +67,8 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var tva = dto.TvaType.ToTva();
-            var price = new Price(dto.PriceHt, tva);
+            var tvaType = dto.TvaType.ToTvaType();
+            var price = new Price(dto.PriceHt, tvaType);
             
             var product = await _productService.CreateAsync(dto.Name, price);
             var response = product.ToResponseDto();
@@ -96,8 +96,8 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var tva = dto.TvaType.ToTva();
-            var price = new Price(dto.PriceHt, tva);
+            var tvaType = dto.TvaType.ToTvaType();
+            var price = new Price(dto.PriceHt, tvaType);
             
             var product = await _productService.UpdateAsync(id, dto.Name, price);
             

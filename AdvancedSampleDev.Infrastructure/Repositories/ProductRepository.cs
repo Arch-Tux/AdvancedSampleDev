@@ -83,8 +83,8 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
     // Mapping Entity -> Domain
     private static Product MapToDomain(ProductEntity entity)
     {
-        var tva = GetTvaFromRate(entity.TvaRate);
-        var price = new Price(entity.PriceHt, tva);
+        var tvaType = GetTvaTypeFromRate(entity.TvaRate);
+        var price = new Price(entity.PriceHt, tvaType);
         
         // Mapper les suppliers associés
         var suppliers = entity.ProductSuppliers?
@@ -102,14 +102,14 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
         return product;
     }
 
-    private static Tva GetTvaFromRate(decimal rate)
+    private static TvaType GetTvaTypeFromRate(decimal rate)
     {
         return rate switch
         {
-            0.055m => Tva.Reduced,
-            0.10m => Tva.Intermediate,
-            0.20m => Tva.Standard,
-            _ => Tva.Standard // Par défaut
+            0.055m => TvaType.Reduced,
+            0.10m => TvaType.Intermediate,
+            0.20m => TvaType.Standard,
+            _ => TvaType.Standard // Par défaut
         };
     }
 }
