@@ -1,5 +1,6 @@
 using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Application.Products;
+using AdvancedSampleDev.Application.Suppliers;
 using AdvancedSampleDev.domain.Interfaces.Product;
 using AdvancedSampleDev.domain.Interfaces.Supplier;
 using AdvancedSampleDev.Infrastructure.Repositories;
@@ -29,6 +30,7 @@ builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 
 // Enregistrement des services de la couche Application
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<SupplierService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

@@ -16,8 +16,4 @@
       <ProjectReference Include="..\AdvancedSampleDev.Application\AdvancedSampleDev.Application.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\Supplier\" />
-    </ItemGroup>
-
 </Project>
