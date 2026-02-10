@@ -75,7 +75,7 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
             Id = product.Id,
             Name = product.Name,
             PriceHt = product.Price.GetAmountHt(),
-            TvaRate = product.Price.GetTvaRate(),
+            TvaType = product.Price.GetTvaType(),
             IsActive = product.GetIsActive()
         };
     }
@@ -83,8 +83,7 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
     // Mapping Entity -> Domain
     private static Product MapToDomain(ProductEntity entity)
     {
-        var tvaType = GetTvaTypeFromRate(entity.TvaRate);
-        var price = new Price(entity.PriceHt, tvaType);
+        var price = new Price(entity.PriceHt, entity.TvaType);
         
         // Mapper les suppliers associés
         var suppliers = entity.ProductSuppliers?
@@ -100,16 +99,5 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
             suppliers);
         
         return product;
-    }
-
-    private static TvaType GetTvaTypeFromRate(decimal rate)
-    {
-        return rate switch
-        {
-            0.055m => TvaType.Reduced,
-            0.10m => TvaType.Intermediate,
-            0.20m => TvaType.Standard,
-            _ => TvaType.Standard // Par défaut
-        };
     }
 }
