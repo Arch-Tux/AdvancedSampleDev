@@ -62,3 +62,4 @@ dotnet run --project AdvancedSampleDev.Cli db-reset
 - Le CLI charge automatiquement le fichier `.env` depuis la racine du projet
 - Les commandes utilisent les mêmes configurations que l'API
 - Le seed ne s'exécute QUE si vous le demandez explicitement (plus d'exécution automatique au démarrage de l'app)
+
