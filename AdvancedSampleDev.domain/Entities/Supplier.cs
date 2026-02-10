@@ -4,8 +4,8 @@ using Exceptions;
 
 public class Supplier
 {
-  public Guid Id { get; }
-  public string Name { get; }
+  public Guid Id { get; private set; }
+  public string Name { get; private set; }
 
   // Constructeur public pour créer un nouveau fournisseur
   public Supplier(string name)
@@ -25,6 +25,12 @@ public class Supplier
   public static Supplier Reconstitute(Guid id, string name)
   {
     return new Supplier(id, name);
+  }
+
+  // Méthode pour changer le nom
+  public void ChangeName(string newName)
+  {
+    Name = ValidateName(newName);
   }
 
   // Validation centralisée du nom

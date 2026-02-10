@@ -1,4 +1,9 @@
 using AdvancedSampleDev.Infrastructure.Extensions;
+using AdvancedSampleDev.Application.Products;
+using AdvancedSampleDev.Application.Suppliers;
+using AdvancedSampleDev.domain.Interfaces.Product;
+using AdvancedSampleDev.domain.Interfaces.Supplier;
+using AdvancedSampleDev.Infrastructure.Repositories;
 using DotNetEnv;
 
 // Charger les variables d'environnement depuis le fichier .env à la racine de la solution
@@ -18,6 +23,14 @@ builder.Services.AddControllers();
 
 // Configuration de la base de données PostgreSQL via l'extension centralisée
 builder.Services.AddPostgreSqlDbContext();
+
+// Enregistrement des repositories
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+
+// Enregistrement des services de la couche Application
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<SupplierService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

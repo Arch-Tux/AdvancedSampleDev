@@ -1,3 +1,4 @@
+using AdvancedSampleDev.domain.Entities;
 using AdvancedSampleDev.Infrastructure.Entities;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,14 @@ public static class DatabaseSeeder
         await context.Suppliers.AddRangeAsync(suppliers);
         await context.SaveChangesAsync();
 
-        // Générer 100 produits
-        var tvaRates = new[] { 0.055m, 0.10m, 0.20m }; // 5.5%, 10%, 20%
+        // Générer 100 produits avec TvaType (enum)
+        var tvaTypes = new[] { TvaType.Reduced, TvaType.Intermediate, TvaType.Standard };
         
         var productFaker = new Faker<ProductEntity>("fr")
             .RuleFor(p => p.Id, _ => Guid.NewGuid())
             .RuleFor(p => p.Name, f => f.Commerce.ProductName())
             .RuleFor(p => p.PriceHt, f => f.Finance.Amount(min: 5, max: 1000))
-            .RuleFor(p => p.TvaRate, f => f.PickRandom(tvaRates))
+            .RuleFor(p => p.TvaType, f => f.PickRandom(tvaTypes))
             .RuleFor(p => p.IsActive, f => f.Random.Bool(0.9f)); // 90% actifs
 
         var products = productFaker.Generate(100);
