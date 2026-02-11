@@ -1,25 +1,13 @@
-﻿﻿﻿using AdvancedSampleDev.Infrastructure;
+﻿﻿﻿﻿using AdvancedSampleDev.Infrastructure;
 using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Infrastructure.Seed;
-using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-// Charger les variables d'environnement depuis le fichier .env
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
-if (File.Exists(envPath))
-{
-    Env.Load(envPath);
-}
-else
-{
-    Env.Load(); // Tenter de charger depuis le répertoire courant
-}
-
 var builder = Host.CreateApplicationBuilder(args);
 
-// Configuration de la base de données via l'extension centralisée
-builder.Services.AddPostgreSqlDbContext();
+// Configuration de la base de données SQLite
+builder.Services.AddSqliteDbContext();
 
 var app = builder.Build();
 

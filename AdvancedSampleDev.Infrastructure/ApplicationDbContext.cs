@@ -18,7 +18,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).HasMaxLength(300).IsRequired();
-            entity.Property(e => e.PriceHt).HasColumnType("decimal(18,2)").IsRequired();
+            entity.Property(e => e.PriceHt).IsRequired(); // SQLite gère les decimals automatiquement
             entity.Property(e => e.TvaType).HasConversion<int>().IsRequired(); // Stocké comme int en BDD
             entity.Property(e => e.IsActive).IsRequired();
         });
