@@ -28,7 +28,7 @@ public class SupplierTests
     public void Constructor_WithInvalidName_ShouldThrowDomainException(string? invalidName)
     {
         // Arrange & Act
-        Action act = () => new Supplier(invalidName);
+        Action act = () => new Supplier(invalidName!);
 
         // Assert
         act.Should().Throw<DomainException>()
@@ -59,7 +59,7 @@ public class SupplierTests
         var supplier = new Supplier("Nom valide");
 
         // Act
-        Action act = () => supplier.ChangeName(invalidName);
+        Action act = () => supplier.ChangeName(invalidName!);
 
         // Assert
         act.Should().Throw<DomainException>()

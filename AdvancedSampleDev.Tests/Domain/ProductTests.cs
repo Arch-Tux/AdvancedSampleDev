@@ -34,7 +34,7 @@ public class ProductTests
         var price = new Price(100m, TvaType.Standard);
 
         // Act
-        Action act = () => new Product(invalidName, price);
+        Action act = () => new Product(invalidName!, price);
 
         // Assert
         act.Should().Throw<DomainException>()
@@ -76,7 +76,7 @@ public class ProductTests
         var product = new Product("Nom valide", new Price(100m, TvaType.Standard));
 
         // Act
-        Action act = () => product.ChangeName(invalidName);
+        Action act = () => product.ChangeName(invalidName!);
 
         // Assert
         act.Should().Throw<DomainException>()
