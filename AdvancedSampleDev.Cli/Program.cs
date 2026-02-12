@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 using AdvancedSampleDev.Infrastructure;
+=======
+﻿﻿﻿﻿﻿using AdvancedSampleDev.Infrastructure;
+>>>>>>> b036f56 (OK: env db)
 using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Infrastructure.Seed;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 var builder = Host.CreateApplicationBuilder(args);
 
 // Configuration de la base de données SQLite
-builder.Services.AddSqliteDbContext();
+builder.Services.AddSqliteDbContext(builder.Configuration);
 
 var app = builder.Build();
 

@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Configuration de la base de données SQLite
-builder.Services.AddSqliteDbContext();
+builder.Services.AddSqliteDbContext(builder.Configuration);
 
 // Enregistrement des repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
