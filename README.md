@@ -25,6 +25,18 @@ dotnet run --project AdvancedSampleDev.Api
 
 L'API sera accessible sur : `http://localhost:5155`
 
+### 4. Tester l'API avec Swagger UI
+
+Ouvre ton navigateur sur : **http://localhost:5155/**
+
+Swagger UI te permet de :
+- ✅ Visualiser tous les endpoints
+- ✅ Tester les requêtes directement depuis le navigateur
+- ✅ Voir la documentation interactive
+- ✅ Pas besoin de Postman !
+
+Documentation complète : `Docs/swagger-ui.md`
+
 ---
 
 ## 📂 Base de données

@@ -4,6 +4,7 @@ using AdvancedSampleDev.Application.Suppliers;
 using AdvancedSampleDev.domain.Interfaces.Product;
 using AdvancedSampleDev.domain.Interfaces.Supplier;
 using AdvancedSampleDev.Infrastructure.Repositories;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,16 +21,16 @@ builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<SupplierService>();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Configuration OpenAPI native .NET 10
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  app.MapOpenApi();
+    app.MapOpenApi();
+    app.MapScalarApiReference(); // Interface UI moderne de .NET 10
 }
 
 app.UseHttpsRedirection();
