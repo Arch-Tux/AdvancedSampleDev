@@ -25,17 +25,18 @@ dotnet run --project AdvancedSampleDev.Api
 
 L'API sera accessible sur : `http://localhost:5155`
 
-### 4. Tester l'API avec Swagger UI
+### 4. Tester l'API avec Scalar UI
 
-Ouvre ton navigateur sur : **http://localhost:5155/scalar**
+Ouvre ton navigateur sur : **http://localhost:5155/scalar/v1**
 
-Swagger UI te permet de :
+Scalar UI te permet de :
 - ✅ Visualiser tous les endpoints
 - ✅ Tester les requêtes directement depuis le navigateur
 - ✅ Voir la documentation interactive
+- ✅ Interface moderne et rapide (recommandée pour .NET 10)
 - ✅ Pas besoin de Postman !
 
-Documentation complète : `Docs/swagger-ui.md`
+Documentation complète : `Docs/scalar-ui.md`
 
 ---
 
