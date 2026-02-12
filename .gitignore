@@ -21,3 +21,8 @@ appsettings.Development.json
 appsettings.Production.json
 appsettings.Staging.json
 appsettings.*.json
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
