@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using AdvancedSampleDev.Infrastructure;
+using AdvancedSampleDev.Infrastructure;
 using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Infrastructure.Seed;
 using Microsoft.Extensions.DependencyInjection;
