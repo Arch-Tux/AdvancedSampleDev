@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 using AdvancedSampleDev.Infrastructure;
-=======
-﻿﻿﻿﻿﻿using AdvancedSampleDev.Infrastructure;
->>>>>>> b036f56 (OK: env db)
 using AdvancedSampleDev.Infrastructure.Extensions;
 using AdvancedSampleDev.Infrastructure.Seed;
 using Microsoft.Extensions.DependencyInjection;
