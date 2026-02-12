@@ -20,9 +20,9 @@ dotnet run --project AdvancedSampleDev.Cli db-reset
 dotnet run --project AdvancedSampleDev.Api
 
 # 3. Ouvrir dans le navigateur
-open http://localhost:5155/
+open http://localhost:5155/scalar
 # ou
-# http://localhost:5155/
+# http://localhost:5155/scalar
 ```
 
 ---

@@ -27,7 +27,7 @@ L'API sera accessible sur : `http://localhost:5155`
 
 ### 4. Tester l'API avec Swagger UI
 
-Ouvre ton navigateur sur : **http://localhost:5155/**
+Ouvre ton navigateur sur : **http://localhost:5155/scalar**
 
 Swagger UI te permet de :
 - ✅ Visualiser tous les endpoints
