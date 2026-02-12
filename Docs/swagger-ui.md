@@ -4,7 +4,7 @@
 
 Une fois l'API lancée, Swagger UI est accessible à :
 
-**URL : http://localhost:5155/scalar
+**URL : http://localhost:5155/scalar**
 
 Swagger UI est configuré à la racine pour un accès direct et facile.
 
