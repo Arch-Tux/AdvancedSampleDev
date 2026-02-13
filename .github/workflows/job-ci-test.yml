@@ -10,6 +10,11 @@ on:
       - dev
       - main
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 jobs:
   test:
     name: Tests et Couverture
@@ -67,22 +72,22 @@ jobs:
       
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v4
+        if: always()
+        continue-on-error: true
         with:
           files: ./coveragereport/Cobertura.xml
           flags: unittests,integrationtests
           name: codecov-umbrella
-          fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v1
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Test Results
-          path: 'TestResults/**/*.trx'
-          reporter: dotnet-trx
-          fail-on-error: true
+          name: test-results
+          path: TestResults/**/*.trx
+          retention-days: 30
       
       - name: Upload Coverage Report as Artifact
         uses: actions/upload-artifact@v4
@@ -93,7 +98,7 @@ jobs:
           retention-days: 30
       
       - name: Comment PR with Coverage
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           path: coveragereport/SummaryGithub.md
