@@ -1,0 +1,63 @@
+name: Tests App
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - dev
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  test:
+    name: Tests et Couverture
+    runs-on: ubuntu-latest
+    
+    env:
+      JWT_SECRET_KEY: "TestSecretKeyForCIOnlyDoNotUseInProduction12345678901234567890"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+      
+      - name: Run Unit Tests
+        run: |
+          dotnet test \
+            --no-build \
+            --configuration Release \
+            --filter "FullyQualifiedName~Domain|FullyQualifiedName~Application.ProductServiceTests|FullyQualifiedName~Application.SupplierServiceTests" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory:"TestResults/Unit" \
+            --logger "trx;LogFileName=unit-tests.trx" \
+            --verbosity normal
+      
+      - name: Run Integration Tests
+        run: |
+          dotnet test \
+            --no-build \
+            --configuration Release \
+            --filter "FullyQualifiedName~Integration" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory:"TestResults/Integration" \
+            --logger "trx;LogFileName=integration-tests.trx" \
+            --verbosity normal

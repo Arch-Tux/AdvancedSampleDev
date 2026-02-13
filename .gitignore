@@ -1,5 +1,32 @@
+# Build outputs
 bin/
 obj/
 /packages/
+
+# Rider
+.idea/
+*.suo
+*.user
 riderModule.iml
 /_ReSharper.Caches/
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Configuration files - utiliser uniquement .env
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.*.json
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# Coverage reports
+coveragereport/
+TestResults/
