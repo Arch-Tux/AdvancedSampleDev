@@ -6,9 +6,7 @@ using AdvancedSampleDev.domain.Interfaces.Supplier;
 using AdvancedSampleDev.Infrastructure.Repositories;
 using Scalar.AspNetCore;
 using AdvancedSampleDev.Api.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using AdvancedSampleDev.Api.Middlewares;
 
 // Charger les variables d'environnement depuis le fichier .env
 DotNetEnv.Env.Load();
@@ -31,35 +29,8 @@ builder.Services.AddScoped<SupplierService>();
 // Enregistrement du service de tokens JWT
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// Configuration de l'authentification JWT
-var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
-    ?? throw new InvalidOperationException("JWT_SECRET_KEY non définie dans les variables d'environnement");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] 
-    ?? throw new InvalidOperationException("JWT Issuer non configuré");
-var jwtAudience = builder.Configuration["Jwt:Audience"] 
-    ?? throw new InvalidOperationException("JWT Audience non configurée");
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
-        ClockSkew = TimeSpan.Zero // Pas de délai de grâce pour l'expiration
-    };
-});
-
-builder.Services.AddAuthorization();
+// Configuration de l'authentification JWT (centralisée dans Middlewares)
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Configuration OpenAPI native .NET 10
 builder.Services.AddOpenApi();
@@ -73,10 +44,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference(); // Interface UI moderne de .NET 10
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
+// Configuration des middlewares (centralisée dans Middlewares)
+app.UseAppMiddlewares();
 
 app.MapControllers();
 
