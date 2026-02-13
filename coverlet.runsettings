@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <!-- Formats de sortie -->
+          <Format>cobertura,opencover</Format>
+          
+          <!-- Exclure les projets de tests de la couverture -->
+          <Exclude>[*.Tests]*</Exclude>
+          
+          <!-- Exclure les fichiers générés -->
+          <ExcludeByFile>**/Migrations/**,**/obj/**,**/bin/**</ExcludeByFile>
+          
+          <!-- Exclure les attributs -->
+          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

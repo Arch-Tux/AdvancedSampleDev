@@ -1,0 +1,39 @@
+Summary
+  Generated on: 13/02/2026 - 09:41:52
+  Coverage date: 13/02/2026 - 09:41:48 - 13/02/2026 - 09:41:52
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 3
+  Classes: 13
+  Files: 13
+  Line coverage: 76.2%
+  Covered lines: 173
+  Uncovered lines: 54
+  Coverable lines: 227
+  Total lines: 703
+  Branch coverage: 59.3% (19 of 32)
+  Covered branches: 19
+  Total branches: 32
+  Method coverage: 84.7% (39 of 46)
+  Full method coverage: 82.6% (38 of 46)
+  Covered methods: 39
+  Fully covered methods: 38
+  Total methods: 46
+
+AdvancedSampleDev.Application                                                    20%
+  AdvancedSampleDev.Application.Products.Mappings.ProductMappingExtensions        0%
+  AdvancedSampleDev.Application.Products.ProductService                         100%
+  AdvancedSampleDev.Application.Suppliers.Mappings.SupplierMappingExtensions      0%
+  AdvancedSampleDev.Application.Suppliers.SupplierService                       100%
+
+AdvancedSampleDev.domain                                                       96.9%
+  AdvancedSampleDev.domain.Entities.Price                                      94.4%
+  AdvancedSampleDev.domain.Entities.Product                                    95.3%
+  AdvancedSampleDev.domain.Entities.Supplier                                    100%
+  AdvancedSampleDev.domain.Entities.TvaTypeExtensions                           100%
+  AdvancedSampleDev.domain.Exceptions.DomainException                           100%
+
+AdvancedSampleDev.Infrastructure                                               78.4%
+  AdvancedSampleDev.Infrastructure.ApplicationDbContext                          97%
+  AdvancedSampleDev.Infrastructure.Extensions.ServiceCollectionExtensions         0%
+  AdvancedSampleDev.Infrastructure.Repositories.ProductRepository               100%
+  AdvancedSampleDev.Infrastructure.Repositories.SupplierRepository              100%

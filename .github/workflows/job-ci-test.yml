@@ -1,0 +1,104 @@
+name: Tests App
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - dev
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  test:
+    name: Tests et Couverture
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+      
+      - name: Run Unit Tests
+        run: |
+          dotnet test \
+            --no-build \
+            --configuration Release \
+            --filter "FullyQualifiedName~Domain|FullyQualifiedName~Application.ProductServiceTests|FullyQualifiedName~Application.SupplierServiceTests" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory:"TestResults/Unit" \
+            --logger "trx;LogFileName=unit-tests.trx" \
+            --verbosity normal
+      
+      - name: Run Integration Tests
+        run: |
+          dotnet test \
+            --no-build \
+            --configuration Release \
+            --filter "FullyQualifiedName~Integration" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory:"TestResults/Integration" \
+            --logger "trx;LogFileName=integration-tests.trx" \
+            --verbosity normal
+      
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      
+      - name: Generate Coverage Report
+        run: |
+          reportgenerator \
+            -reports:"TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"coveragereport" \
+            -reporttypes:"Html;Cobertura;MarkdownSummaryGithub" \
+            -classfilters:"-*.Tests.*"
+      
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # v4.6.0
+        if: always()
+        continue-on-error: true
+        with:
+          files: ./coveragereport/Cobertura.xml
+          flags: unittests,integrationtests
+          name: codecov-umbrella
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: TestResults/**/*.trx
+          retention-days: 30
+      
+      - name: Upload Coverage Report as Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coveragereport/
+          retention-days: 30
+      
+      - name: Comment PR with Coverage
+        if: github.event_name == 'pull_request' && always()
+        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        with:
+          path: coveragereport/SummaryGithub.md
