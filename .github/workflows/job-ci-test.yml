@@ -20,6 +20,9 @@ jobs:
     name: Tests et Couverture
     runs-on: ubuntu-latest
     
+    env:
+      JWT_SECRET_KEY: "TestSecretKeyForCIOnlyDoNotUseInProduction12345678901234567890"
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
