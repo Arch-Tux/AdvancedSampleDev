@@ -1,22 +1,22 @@
 Summary
-  Generated on: 12/02/2026 - 11:42:33
-  Coverage date: 12/02/2026 - 11:31:08 - 12/02/2026 - 11:42:32
-  Parser: MultiReport (4x Cobertura)
+  Generated on: 13/02/2026 - 09:41:52
+  Coverage date: 13/02/2026 - 09:41:48 - 13/02/2026 - 09:41:52
+  Parser: MultiReport (2x Cobertura)
   Assemblies: 3
   Classes: 13
   Files: 13
-  Line coverage: 45.8%
-  Covered lines: 104
-  Uncovered lines: 123
+  Line coverage: 76.2%
+  Covered lines: 173
+  Uncovered lines: 54
   Coverable lines: 227
   Total lines: 703
-  Branch coverage: 56.2% (18 of 32)
-  Covered branches: 18
+  Branch coverage: 59.3% (19 of 32)
+  Covered branches: 19
   Total branches: 32
-  Method coverage: 63% (29 of 46)
-  Full method coverage: 60.8% (28 of 46)
-  Covered methods: 29
-  Fully covered methods: 28
+  Method coverage: 84.7% (39 of 46)
+  Full method coverage: 82.6% (38 of 46)
+  Covered methods: 39
+  Fully covered methods: 38
   Total methods: 46
 
 AdvancedSampleDev.Application                                                    20%
@@ -32,8 +32,8 @@ AdvancedSampleDev.domain                                                       9
   AdvancedSampleDev.domain.Entities.TvaTypeExtensions                           100%
   AdvancedSampleDev.domain.Exceptions.DomainException                           100%
 
-AdvancedSampleDev.Infrastructure                                                  0%
-  AdvancedSampleDev.Infrastructure.ApplicationDbContext                           0%
+AdvancedSampleDev.Infrastructure                                               78.4%
+  AdvancedSampleDev.Infrastructure.ApplicationDbContext                          97%
   AdvancedSampleDev.Infrastructure.Extensions.ServiceCollectionExtensions         0%
-  AdvancedSampleDev.Infrastructure.Repositories.ProductRepository                 0%
-  AdvancedSampleDev.Infrastructure.Repositories.SupplierRepository                0%
+  AdvancedSampleDev.Infrastructure.Repositories.ProductRepository               100%
+  AdvancedSampleDev.Infrastructure.Repositories.SupplierRepository              100%

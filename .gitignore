@@ -26,3 +26,7 @@ appsettings.*.json
 *.db
 *.db-shm
 *.db-wal
+
+# Coverage reports
+coveragereport/
+TestResults/

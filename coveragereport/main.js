@@ -230,10 +230,10 @@ var assemblies = [
   {
     "name": "AdvancedSampleDev.Infrastructure",
     "classes": [
-      { "name": "AdvancedSampleDev.Infrastructure.ApplicationDbContext", "rp": "AdvancedSampleDev.Infrastructure_ApplicationDbContext.html", "cl": 0, "ucl": 34, "cal": 34, "tl": 50, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AdvancedSampleDev.Infrastructure.ApplicationDbContext", "rp": "AdvancedSampleDev.Infrastructure_ApplicationDbContext.html", "cl": 33, "ucl": 1, "cal": 34, "tl": 50, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AdvancedSampleDev.Infrastructure.Extensions.ServiceCollectionExtensions", "rp": "AdvancedSampleDev.Infrastructure_ServiceCollectionExtensions.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 48, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AdvancedSampleDev.Infrastructure.Repositories.ProductRepository", "rp": "AdvancedSampleDev.Infrastructure_ProductRepository.html", "cl": 0, "ucl": 25, "cal": 25, "tl": 103, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AdvancedSampleDev.Infrastructure.Repositories.SupplierRepository", "rp": "AdvancedSampleDev.Infrastructure_SupplierRepository.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AdvancedSampleDev.Infrastructure.Repositories.ProductRepository", "rp": "AdvancedSampleDev.Infrastructure_ProductRepository.html", "cl": 25, "ucl": 0, "cal": 25, "tl": 103, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AdvancedSampleDev.Infrastructure.Repositories.SupplierRepository", "rp": "AdvancedSampleDev.Infrastructure_SupplierRepository.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
