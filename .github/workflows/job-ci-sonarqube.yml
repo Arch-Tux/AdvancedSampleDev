@@ -50,7 +50,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          $prNumber = "${{ github.event.pull_request.number }}"
+          if ($prNumber -ne "") {
+            Write-Host "Analyzing Pull Request #$prNumber"
+            ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.pullrequest.key="$prNumber" /d:sonar.pullrequest.branch="${{ github.head_ref }}" /d:sonar.pullrequest.base="${{ github.base_ref }}"
+          } else {
+            Write-Host "Analyzing branch ${{ github.ref_name }}"
+            ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          }
           dotnet build --no-incremental
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
       
