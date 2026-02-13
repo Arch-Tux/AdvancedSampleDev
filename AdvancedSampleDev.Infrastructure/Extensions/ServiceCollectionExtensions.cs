@@ -38,11 +38,45 @@ public static class ServiceCollectionExtensions
         var configPath = configuration["DatabasePath"];
         if (!string.IsNullOrWhiteSpace(configPath))
         {
+            // Si c'est un chemin relatif, on le résout à partir de la racine du projet
+            if (!Path.IsPathRooted(configPath))
+            {
+                var projectRoot = FindProjectRoot();
+                if (projectRoot != null)
+                {
+                    configPath = Path.Combine(projectRoot, configPath);
+                }
+            }
             return $"Data Source={configPath}";
         }
         
-        // 3. Fallback final : Chemin par défaut basé sur AppContext.BaseDirectory
-        var defaultDbPath = Path.Combine(AppContext.BaseDirectory, "advancedsampledev.db");
+        // 3. Fallback final : Racine du projet + advancedsampledev.db
+        var projectRootFallback = FindProjectRoot();
+        var defaultDbPath = projectRootFallback != null 
+            ? Path.Combine(projectRootFallback, "advancedsampledev.db")
+            : Path.Combine(AppContext.BaseDirectory, "advancedsampledev.db");
+        
         return $"Data Source={defaultDbPath}";
+    }
+    
+    /// <summary>
+    /// Trouve la racine du projet en remontant jusqu'au fichier .sln
+    /// </summary>
+    private static string? FindProjectRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        
+        while (directory != null)
+        {
+            // Cherche un fichier .sln dans le répertoire courant
+            if (directory.GetFiles("*.sln").Length > 0)
+            {
+                return directory.FullName;
+            }
+            
+            directory = directory.Parent;
+        }
+        
+        return null;
     }
 }
