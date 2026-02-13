@@ -1,161 +1,403 @@
-# Fonctionnement - AdvancedSampleDev
+# 04 - Fonctionnement
 
-## 4.1 Flux de données
+## 🔄 Flow d'une requête HTTP
 
-### Création d'un produit
+### Exemple : Créer un produit
+
 ```
-Client HTTP
-    │
-    ▼
-[ProductController] (API)
-    │
-    ▼
-[ProductService] (Application)
-    │
-    ├─► Crée Price (Domain)
-    ├─► Crée Product (Domain)
-    │
-    ▼
-[IProductRepository] (Interface Domain)
-    │
-    ▼
-[ProductRepository] (Infrastructure)
-    │
-    ▼
-Base de données
+┌─────────┐     ┌────────────┐     ┌──────────┐     ┌────────────┐     ┌──────────┐
+│ Client  │────→│Middlewares │────→│Controller│────→│  Service   │────→│Repository│
+└─────────┘     └────────────┘     └──────────┘     └────────────┘     └──────────┘
+    ↓                 ↓                   ↓                ↓                   ↓
+  POST         1. HTTPS Redirect    3. Validate     5. Map DTO      7. Save to DB
+/api/products  2. JWT Auth          4. Call Service    to Domain    8. Map to Entity
+               3. Authorization                     6. Business     9. EF Core
+                                                       Logic
 ```
 
-### Changement de prix
-```
-Client HTTP
-    │
-    ▼
-[ProductController]
-    │
-    ▼
-[ProductService]
-    │
-    ├─► GetByIdAsync() → Product
-    ├─► Product.ChangePrice(newPrice) → Validation métier
-    │
-    ▼
-[ProductRepository.UpdateAsync()]
-    │
-    ▼
-Base de données
-```
+### Détail étape par étape
 
-## 4.2 Règles métier
+#### 1️⃣ **Client envoie la requête**
 
-### Gestion des prix
-1. Un prix doit toujours être positif (> 0)
-2. Un prix est composé d'un montant HT et d'une TVA
-3. Le calcul TTC est automatique via la TVA
-4. Un produit ne peut changer de prix que s'il est actif
+```http
+POST /api/products HTTP/1.1
+Host: localhost:5155
+Authorization: Bearer eyJhbGci...
+Content-Type: application/json
 
-### Gestion de la TVA
-1. Trois taux uniquement : 5.5%, 10%, 20% (France)
-2. Taux hardcodés et immuables (Singleton)
-3. Calculs : HT → TTC et TTC → HT
-
-### Gestion des fournisseurs
-1. Un fournisseur doit avoir un nom non vide
-2. Un produit peut avoir plusieurs fournisseurs
-3. L'association produit-fournisseur est gérée par la couche Application/Infrastructure
-
-## 4.3 Gestion des erreurs
-
-### DomainException
-Exception personnalisée pour les violations de règles métier :
-- Prix invalide (≤ 0 ou null)
-- TVA null
-- Nom de fournisseur vide
-- Tentative de changement de prix sur produit inactif
-
-**Principe** : Fail-fast - les erreurs sont détectées au plus tôt (constructeurs, méthodes métier)
-
-### Exemple de code
-```csharp
-// Dans le constructeur de Price
-public Price(decimal amountHt, Tva tva)
 {
-    AmountHt = amountHt > 0 
-      ? amountHt 
-      : throw new DomainException("Le prix HT doit être supérieur à zéro.");
-    
-    Tva = tva ?? throw new DomainException("La TVA ne peut pas être null.");
+  "name": "Laptop",
+  "priceHT": 1000,
+  "tvaType": "Standard"
 }
 ```
 
-### Diagramme de séquence - Gestion d'erreur
+#### 2️⃣ **Middlewares** (`UseAppMiddlewares()`)
 
-```mermaid
-sequenceDiagram
-    participant Client as Client HTTP
-    participant Controller as ProductController
-    participant Service as ProductService
-    participant Price as Price (Domain)
-
-    Client->>Controller: POST /api/products
-    activate Controller
-    
-    Controller->>Service: CreateProductAsync(dto)
-    activate Service
-    
-    Note over Service: dto.amountHt = -100 (invalide!)
-    
-    Service->>Price: new Price(-100, tva)
-    activate Price
-    
-    Price->>Price: Validate amountHt > 0
-    Note over Price: ❌ Validation échoue
-    
-    Price-->>Service: throw DomainException("Le prix HT doit être supérieur à zéro.")
-    deactivate Price
-    
-    Service-->>Controller: throw DomainException
-    deactivate Service
-    
-    Controller->>Controller: Catch DomainException
-    Controller-->>Client: 400 Bad Request<br/>{ "error": "Le prix HT doit être supérieur à zéro." }
-    deactivate Controller
+```csharp
+// 1. UseHttpsRedirection() → Force HTTPS
+// 2. UseAuthentication() → Valide le token JWT
+// 3. UseAuthorization() → Vérifie les permissions
 ```
 
-### Flux d'erreur pour produit inactif
+**Si le token est invalide** → 401 Unauthorized  
+**Si le token est valide** → Continue
 
-```mermaid
-sequenceDiagram
-    participant Client as Client HTTP
-    participant Controller as ProductController
-    participant Service as ProductService
-    participant Product as Product (Domain)
+#### 3️⃣ **Controller** (`ProductsController`)
 
-    Client->>Controller: PUT /api/products/{id}/price
-    activate Controller
+```csharp
+[HttpPost]
+[Authorize]
+public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
+{
+    // Validation des données (automatic model validation)
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState);
     
-    Controller->>Service: ChangePriceAsync(id, dto)
-    activate Service
+    // Appel du service
+    var product = await _productService.CreateAsync(dto);
     
-    Service->>Service: product = GetById(id)
-    Note over Service: product.IsActive = false
+    // Retour HTTP 201 Created
+    return CreatedAtAction(nameof(GetById), 
+        new { id = product.Id }, 
+        product);
+}
+```
+
+#### 4️⃣ **Service** (`ProductService`)
+
+```csharp
+public async Task<ProductDto> CreateAsync(CreateProductDto dto)
+{
+    // 1. Mapping DTO → Domain
+    var price = new Price(dto.PriceHT, dto.TvaType);
+    var product = new Product(dto.Name, price);
     
-    Service->>Product: ChangePrice(newPrice)
-    activate Product
+    // 2. Validation métier (dans Product)
+    // → Product.ctor valide que name != empty et price > 0
     
-    Product->>Product: Validate IsActive
-    Note over Product: ❌ Produit inactif
+    // 3. Appel du repository
+    await _repository.AddAsync(product);
     
-    Product-->>Service: throw DomainException("Produit inactif")
-    deactivate Product
+    // 4. Mapping Domain → DTO
+    return product.ToDto();
+}
+```
+
+#### 5️⃣ **Repository** (`ProductRepository`)
+
+```csharp
+public async Task AddAsync(Product product)
+{
+    // 1. Mapping Domain → Entity (pour EF Core)
+    var entity = MapToEntity(product);
     
-    Service-->>Controller: throw DomainException
-    deactivate Service
+    // 2. Ajout dans le DbContext
+    await _context.Products.AddAsync(entity);
     
-    Controller->>Controller: Catch DomainException
-    Controller-->>Client: 400 Bad Request<br/>{ "error": "Produit inactif" }
-    deactivate Controller
+    // 3. SaveChanges (commit en DB)
+    await _context.SaveChangesAsync();
+}
+```
+
+#### 6️⃣ **Base de données SQLite**
+
+```sql
+INSERT INTO Products (Id, Name, PriceHT, TvaType, IsActive)
+VALUES ('3fa85f64-...', 'Laptop', 1000.00, 2, 1);
+```
+
+#### 7️⃣ **Réponse au client**
+
+```http
+HTTP/1.1 201 Created
+Location: /api/products/3fa85f64-...
+Content-Type: application/json
+
+{
+  "id": "3fa85f64-...",
+  "name": "Laptop",
+  "priceHT": 1000.00,
+  "priceTTC": 1200.00,
+  "tvaType": "Standard",
+  "isActive": true
+}
 ```
 
 ---
 
-[← Retour à la documentation principale](./README.md)
+## 🔐 Flow d'authentification JWT
+
+### 1. Login
+
+```
+┌──────┐     ┌──────────────┐     ┌─────────────┐     ┌────────────┐
+│Client│────→│AuthController│────→│TokenService │────→│  Response  │
+└──────┘     └──────────────┘     └─────────────┘     └────────────┘
+   ↓                ↓                     ↓                   ↓
+POST           1. Validate          3. Generate         5. Return
+/api/auth/login   username +           JWT token          token +
+                  password                                expiresAt
+{                2. Check           4. Sign with
+ "username":       credentials        secret key
+ "password":       (hardcoded:
+}                  admin/password)
+```
+
+**Code :**
+
+```csharp
+// AuthController.cs
+[HttpPost("login")]
+[AllowAnonymous]
+public IActionResult Login([FromBody] LoginRequest request)
+{
+    // Validation (pour ce démo : admin/password)
+    if (request.Username != "admin" || request.Password != "password")
+        return Unauthorized();
+    
+    // Génération du token
+    var token = _tokenService.GenerateToken(request.Username, "Admin");
+    var expiresAt = DateTime.UtcNow.AddMinutes(60);
+    
+    return Ok(new LoginResponse(token, expiresAt));
+}
+```
+
+### 2. Utilisation du token
+
+```
+Client → [Authorization: Bearer <token>] → Middleware → Validation → Continue
+```
+
+**Validation JWT :**
+1. Vérifier la **signature** (avec la clé secrète)
+2. Vérifier l'**expiration** (claim `exp`)
+3. Vérifier l'**issuer** et l'**audience**
+4. Extraire les **claims** (username, role)
+
+**Si valide** → Claims disponibles dans `HttpContext.User`  
+**Si invalide/expiré** → 401 Unauthorized
+
+---
+
+## 🗄️ Mapping des couches
+
+### Domain ↔ Entity (Infrastructure)
+
+```csharp
+// ProductRepository.cs
+
+// Domain → Entity (pour sauvegarder)
+private ProductEntity MapToEntity(Product product)
+{
+    return new ProductEntity
+    {
+        Id = product.Id,
+        Name = product.Name,
+        PriceHT = product.Price.GetAmountHt(),
+        TvaType = product.Price.GetTvaType(),
+        IsActive = product.GetIsActive()
+    };
+}
+
+// Entity → Domain (pour récupérer)
+private Product MapToDomain(ProductEntity entity)
+{
+    var price = new Price(entity.PriceHT, entity.TvaType);
+    return Product.Reconstitute(
+        entity.Id,
+        entity.Name,
+        price,
+        entity.IsActive,
+        null // suppliers
+    );
+}
+```
+
+### Domain ↔ DTO (Application)
+
+```csharp
+// ProductMappings.cs
+
+// Domain → DTO (pour l'API)
+public static ProductDto ToDto(this Product product)
+{
+    return new ProductDto
+    {
+        Id = product.Id,
+        Name = product.Name,
+        PriceHT = product.Price.GetAmountHt(),
+        PriceTTC = product.Price.GetAmountTtc(),
+        TvaType = product.Price.GetTvaType().ToString(),
+        IsActive = product.GetIsActive()
+    };
+}
+
+// DTO → Domain (depuis l'API)
+public static Product ToDomain(this CreateProductDto dto)
+{
+    var price = new Price(dto.PriceHT, dto.TvaType);
+    return new Product(dto.Name, price);
+}
+```
+
+---
+
+## 🧪 Flow des tests
+
+### Tests unitaires (Domain)
+
+```csharp
+[Fact]
+public void Constructor_WithValidData_ShouldCreateProduct()
+{
+    // Arrange
+    var price = new Price(100m, TvaType.Standard);
+    
+    // Act
+    var product = new Product("Laptop", price);
+    
+    // Assert
+    product.Name.Should().Be("Laptop");
+    product.Price.GetAmountHt().Should().Be(100m);
+    product.GetIsActive().Should().BeTrue();
+}
+```
+
+**Pas de base de données, pas de HTTP, juste la logique métier !**
+
+### Tests d'intégration (Infrastructure)
+
+```csharp
+[Fact]
+public async Task AddAsync_ShouldPersistProduct()
+{
+    // Arrange
+    var product = new Product("Laptop", new Price(100m, TvaType.Standard));
+    var repository = new ProductRepository(Context); // SQLite in-memory
+    
+    // Act
+    await repository.AddAsync(product);
+    var result = await repository.GetByIdAsync(product.Id);
+    
+    // Assert
+    result.Should().NotBeNull();
+    result.Name.Should().Be("Laptop");
+}
+```
+
+**Vraie base de données (SQLite en mémoire), vraie persistence, vrais tests SQL !**
+
+---
+
+## 📊 Diagramme de séquence - Créer un produit
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant MW as Middlewares
+    participant Ctrl as ProductsController
+    participant Svc as ProductService
+    participant Repo as ProductRepository
+    participant DB as SQLite
+
+    C->>MW: POST /api/products + JWT
+    MW->>MW: Validate JWT
+    alt JWT invalide
+        MW-->>C: 401 Unauthorized
+    else JWT valide
+        MW->>Ctrl: Request + User claims
+        Ctrl->>Ctrl: Validate DTO
+        Ctrl->>Svc: CreateAsync(dto)
+        Svc->>Svc: Map DTO → Domain
+        Svc->>Svc: Validate business rules
+        Svc->>Repo: AddAsync(product)
+        Repo->>Repo: Map Domain → Entity
+        Repo->>DB: INSERT INTO Products
+        DB-->>Repo: OK
+        Repo-->>Svc: OK
+        Svc->>Svc: Map Domain → DTO
+        Svc-->>Ctrl: ProductDto
+        Ctrl-->>C: 201 Created + ProductDto
+    end
+```
+
+---
+
+## 🔄 Cycle de vie des objets (DI)
+
+### Scoped (par requête HTTP)
+
+```csharp
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+```
+
+**Durée de vie :**
+- Créé au début de la requête HTTP
+- Réutilisé pendant toute la requête
+- Détruit à la fin de la requête
+
+**Idéal pour :**
+- Services applicatifs
+- Repositories
+- DbContext
+
+### Singleton (toute la vie de l'app)
+
+```csharp
+builder.Services.AddSingleton<ITokenService, TokenService>();
+```
+
+**Durée de vie :**
+- Créé au démarrage de l'application
+- Une seule instance pour toute l'app
+- Jamais détruit (sauf arrêt de l'app)
+
+**Idéal pour :**
+- Configuration
+- Cache
+- Services stateless
+
+### Transient (à chaque injection)
+
+```csharp
+builder.Services.AddTransient<MyService>();
+```
+
+**Durée de vie :**
+- Créé à chaque injection
+- Plusieurs instances possibles dans une même requête
+- Détruit rapidement
+
+**Idéal pour :**
+- Services légers
+- Services stateless sans état partagé
+
+---
+
+## 🎯 Points clés
+
+### Séparation des responsabilités
+
+- **Controller** : HTTP, validation, routing
+- **Service** : Logique applicative, orchestration
+- **Repository** : Persistence, SQL
+- **Domain** : Règles métier, invariants
+
+### Immuabilité
+
+- **Value Objects** sont immuables (`Price`)
+- **DTOs** sont des records (immuables par défaut)
+- Seules les **Entities** ont des méthodes de modification
+
+### Validation
+
+- **Controller** : Validation des données d'entrée (ModelState)
+- **Domain** : Validation des règles métier (invariants)
+- **Service** : Coordination, pas de validation directe
+
+---
+
+**Prochaine section** : [05 - Procédures](05-procedures.md)
