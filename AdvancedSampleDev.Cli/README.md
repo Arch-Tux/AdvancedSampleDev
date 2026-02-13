@@ -1,11 +1,11 @@
 # AdvancedSampleDev CLI
 
-Outil en ligne de commande pour gérer la base de données du projet AdvancedSampleDev.
+Outil en ligne de commande pour gérer la base de données SQLite du projet AdvancedSampleDev.
 
 ## Prérequis
 
-- Le fichier `.env` doit être présent à la racine du projet avec les variables de configuration PostgreSQL
-- Docker doit être lancé avec PostgreSQL (via `docker-compose up -d database`)
+- .NET 10.0 SDK
+- Aucune dépendance externe (SQLite est intégré)
 
 ## Commandes disponibles
 
@@ -35,7 +35,7 @@ dotnet run --project AdvancedSampleDev.Cli db-drop
 
 ### 🔄 DB Reset - Réinitialiser la base de données
 
-Supprime la base de données, la recrée et effectue le seed. Utile pour repartir de zéro.
+Supprime la base de données, la recrée et effectue le seed. **Recommandé pour initialiser le projet**.
 
 ```bash
 dotnet run --project AdvancedSampleDev.Cli db-reset
@@ -50,16 +50,24 @@ dotnet run --project AdvancedSampleDev.Cli help
 ## Utilisation depuis la racine du projet
 
 ```bash
-# Seed
-dotnet run --project AdvancedSampleDev.Cli seed
-
-# Reset complet
+# Reset complet (recommandé au premier lancement)
 dotnet run --project AdvancedSampleDev.Cli db-reset
+
+# Seed uniquement
+dotnet run --project AdvancedSampleDev.Cli seed
 ```
+
+## Emplacement de la base de données
+
+La base de données SQLite `advancedsampledev.db` est automatiquement créée **à la racine du projet** (où se trouve le fichier `.sln`).
+
+- 📂 CLI et API partagent la même base de données
+- ✅ Portable : fonctionne sur toutes les machines
+- 🔍 Le fichier est automatiquement localisé, quel que soit le répertoire d'exécution
 
 ## Notes
 
-- Le CLI charge automatiquement le fichier `.env` depuis la racine du projet
-- Les commandes utilisent les mêmes configurations que l'API
-- Le seed ne s'exécute QUE si vous le demandez explicitement (plus d'exécution automatique au démarrage de l'app)
+- La base de données est créée automatiquement au premier lancement si elle n'existe pas
+- Le seed ne s'exécute QUE si vous le demandez explicitement
+- Utilisez `db-reset` pour repartir de zéro avec des données fraîches
 

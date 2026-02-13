@@ -2,6 +2,7 @@ using AdvancedSampleDev.Application.Products;
 using AdvancedSampleDev.Application.Products.Dto;
 using AdvancedSampleDev.Application.Products.Mappings;
 using AdvancedSampleDev.domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvancedSampleDev.Api.Features.Product;
@@ -11,6 +12,7 @@ namespace AdvancedSampleDev.Api.Features.Product;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] // 🔒 Protégé par JWT
 public class ProductsController : ControllerBase
 {
     private readonly ProductService _productService;

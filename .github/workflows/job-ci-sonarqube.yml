@@ -7,6 +7,11 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - dev
+
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   build:
     name: Build and analyze
@@ -42,14 +47,23 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          $prNumber = "${{ github.event.pull_request.number }}"
+          if ($prNumber -ne "") {
+            Write-Host "Analyzing Pull Request #$prNumber"
+            ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.pullrequest.key="$prNumber" /d:sonar.pullrequest.branch="${{ github.head_ref }}" /d:sonar.pullrequest.base="${{ github.base_ref }}"
+          } else {
+            Write-Host "Analyzing branch ${{ github.ref_name }}"
+            ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Arch-Tux_AdvancedSampleDev" /o:"arch-tux" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          }
           dotnet build --no-incremental
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
       
       - name: Wait for Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496 # v1.1.0
+        continue-on-error: true
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

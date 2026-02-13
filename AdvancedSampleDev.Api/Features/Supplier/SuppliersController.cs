@@ -1,6 +1,7 @@
 using AdvancedSampleDev.Application.Suppliers;
 using AdvancedSampleDev.Application.Suppliers.Dto;
 using AdvancedSampleDev.Application.Suppliers.Mappings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvancedSampleDev.Api.Features.Supplier;
@@ -10,6 +11,7 @@ namespace AdvancedSampleDev.Api.Features.Supplier;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] // 🔒 Protégé par JWT
 public class SuppliersController : ControllerBase
 {
     private readonly SupplierService _supplierService;
