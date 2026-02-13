@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+// Charger les variables d'environnement depuis le fichier .env
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -29,8 +32,8 @@ builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Configuration de l'authentification JWT
-var jwtSecretKey = builder.Configuration["Jwt:SecretKey"] 
-    ?? throw new InvalidOperationException("JWT SecretKey non configurée");
+var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+    ?? throw new InvalidOperationException("JWT_SECRET_KEY non définie dans les variables d'environnement");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] 
     ?? throw new InvalidOperationException("JWT Issuer non configuré");
 var jwtAudience = builder.Configuration["Jwt:Audience"] 

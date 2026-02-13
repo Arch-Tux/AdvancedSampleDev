@@ -21,8 +21,8 @@ public class TokenService : ITokenService
 
     public string GenerateToken(string username, string role = "User")
     {
-        var secretKey = _configuration["Jwt:SecretKey"] 
-            ?? throw new InvalidOperationException("JWT SecretKey non configurée");
+        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+            ?? throw new InvalidOperationException("JWT_SECRET_KEY non définie dans les variables d'environnement");
         var issuer = _configuration["Jwt:Issuer"] 
             ?? throw new InvalidOperationException("JWT Issuer non configuré");
         var audience = _configuration["Jwt:Audience"] 
@@ -30,6 +30,7 @@ public class TokenService : ITokenService
         var expirationMinutes = int.Parse(_configuration["Jwt:ExpirationInMinutes"] ?? "60");
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        // ...existing code...
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
